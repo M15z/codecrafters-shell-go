@@ -30,11 +30,10 @@ func handleEcho(words []string) {
 func main() {
 	for {
 		command := readPrompt()
+		command = strings.TrimSpace(command)
 		if command == "exit" {
 			break
 		}
-
-		command = strings.TrimSpace(command)
 
 		words := strings.Fields(command)
 		if words[0] == "echo" {

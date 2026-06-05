@@ -22,6 +22,10 @@ func readPrompt() string {
 func main() {
 	for {
 		command := readPrompt()
+		if command == "exit" {
+			break
+		}
+
 		fmt.Println(command[:len(command)-1] + ": command not found")
 	}
 }

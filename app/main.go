@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func readPrompt() string {
@@ -22,6 +23,7 @@ func readPrompt() string {
 func main() {
 	for {
 		command := readPrompt()
+		command = strings.TrimSpace(command)
 		if command == "exit" {
 			break
 		}

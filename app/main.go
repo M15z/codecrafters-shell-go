@@ -20,6 +20,8 @@ func readPrompt() string {
 }
 
 func main() {
-	command := readPrompt()
-	fmt.Println(command[:len(command)-1] + ": command not found")
+	for {
+		command := readPrompt()
+		fmt.Println(command[:len(command)-1] + ": command not found")
+	}
 }

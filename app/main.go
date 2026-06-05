@@ -20,14 +20,28 @@ func readPrompt() string {
 
 }
 
+func handleEcho(words []string) {
+	for _, word := range words[1:] {
+		fmt.Print(word + " ")
+	}
+	fmt.Println()
+}
+
 func main() {
 	for {
 		command := readPrompt()
-		command = strings.TrimSpace(command)
 		if command == "exit" {
 			break
 		}
 
-		fmt.Println(command[:len(command)] + ": command not found")
+		command = strings.TrimSpace(command)
+
+		words := strings.Fields(command)
+		if words[0] == "echo" {
+			handleEcho(words)
+		} else {
+			fmt.Printf("%s: command not found\n", command)
+		}
+
 	}
 }

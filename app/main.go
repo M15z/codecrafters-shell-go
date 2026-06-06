@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -27,15 +28,27 @@ func handleEcho(words []string) {
 	fmt.Println()
 }
 
-func handleType(words []string) {
+func isBuiltIn(arg string) bool {
 	builtin := []string{"echo", "exit", "type"}
-	args := words[1]
 
 	for _, b := range builtin {
-		if args == b {
-			fmt.Printf("%s is a shell builtin\n", args)
-			return
+		if b == arg {
+			return true
 		}
+	}
+
+	return false
+}
+
+func handleType(words []string) {
+	args := words[1]
+
+	if isBuiltIn(args) {
+		fmt.Printf("%s is a shell builtin\n", args)
+		return
+	} else if path, _ := exec.LookPath(args); path != "" {
+		fmt.Println(args + " is " + path)
+		return
 	}
 
 	fmt.Printf("%s: not found\n", args)

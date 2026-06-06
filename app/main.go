@@ -11,71 +11,80 @@ import (
 func readPrompt() string {
 	fmt.Print("$ ")
 	command, err := bufio.NewReader(os.Stdin).ReadString('\n')
-
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error reading input:", err)
 		os.Exit(1)
 	}
-
-	return command
-
-}
-
-func handleEcho(words []string) {
-	for _, word := range words[1:] {
-		fmt.Print(word + " ")
-	}
-	fmt.Println()
+	return strings.TrimSpace(command)
 }
 
 func isBuiltIn(arg string) bool {
-	builtin := []string{"echo", "exit", "type"}
-
-	for _, b := range builtin {
+	builtins := []string{"echo", "exit", "type", "pwd"}
+	for _, b := range builtins {
 		if b == arg {
 			return true
 		}
 	}
-
 	return false
 }
 
-func handleType(words []string) {
-	args := words[1]
+func handleEcho(words []string) {
+	fmt.Println(strings.Join(words[1:], " "))
+}
 
-	if isBuiltIn(args) {
-		fmt.Printf("%s is a shell builtin\n", args)
+func handleType(words []string) {
+	arg := words[1]
+	if isBuiltIn(arg) {
+		fmt.Printf("%s is a shell builtin\n", arg)
 		return
-	} else if path, _ := exec.LookPath(args); path != "" {
-		fmt.Println(args + " is " + path)
+	}
+	if path, _ := exec.LookPath(arg); path != "" {
+		fmt.Printf("%s is %s\n", arg, path)
+		return
+	}
+	fmt.Printf("%s: not found\n", arg)
+}
+
+func handlePwd() {
+	pwd, _ := os.Getwd()
+	fmt.Println(pwd)
+}
+
+func handleExternal(words []string) {
+	cmd := exec.Command(words[0], words[1:]...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Run()
+}
+
+func dispatch(command string) {
+	words := strings.Fields(command)
+	if len(words) == 0 {
 		return
 	}
 
-	fmt.Printf("%s: not found\n", args)
+	switch words[0] {
+	case "echo":
+		handleEcho(words)
+	case "type":
+		handleType(words)
+	case "pwd":
+		handlePwd()
+	default:
+		if _, err := exec.LookPath(words[0]); err == nil {
+			handleExternal(words)
+		} else {
+			fmt.Printf("%s: command not found\n", command)
+		}
+	}
 }
 
 func main() {
 	for {
 		command := readPrompt()
-		command = strings.TrimSpace(command)
 		if command == "exit" {
 			break
 		}
-
-		words := strings.Fields(command)
-		if words[0] == "echo" {
-			handleEcho(words)
-		} else if words[0] == "type" {
-			handleType(words)
-		} else if _, err := exec.LookPath(words[0]); err == nil {
-			cmd := exec.Command(words[0], words[1:]...)
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			cmd.Run()
-
-		} else {
-			fmt.Printf("%s: command not found\n", command)
-		}
-
+		dispatch(command)
 	}
 }

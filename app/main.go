@@ -67,6 +67,12 @@ func main() {
 			handleEcho(words)
 		} else if words[0] == "type" {
 			handleType(words)
+		} else if _, err := exec.LookPath(words[0]); err == nil {
+			cmd := exec.Command(words[0], words[1:]...)
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			cmd.Run()
+
 		} else {
 			fmt.Printf("%s: command not found\n", command)
 		}

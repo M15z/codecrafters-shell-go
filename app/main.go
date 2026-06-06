@@ -57,6 +57,16 @@ func handleExternal(words []string) {
 	cmd.Run()
 }
 
+func handleCd(path string) {
+	err := os.Chdir(path)
+
+	if err != nil {
+		fmt.Printf("cd: %s: No such file or directory\n", path)
+		return
+	}
+
+}
+
 func dispatch(command string) {
 	words := strings.Fields(command)
 	if len(words) == 0 {
@@ -70,6 +80,8 @@ func dispatch(command string) {
 		handleType(words)
 	case "pwd":
 		handlePwd()
+	case "cd":
+		handleCd(words[1])
 	default:
 		if _, err := exec.LookPath(words[0]); err == nil {
 			handleExternal(words)
@@ -88,3 +100,4 @@ func main() {
 		dispatch(command)
 	}
 }
+

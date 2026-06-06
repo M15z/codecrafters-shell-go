@@ -58,11 +58,15 @@ func handleExternal(words []string) {
 }
 
 func handleCd(path string) {
+	if path == "~" {
+		home, _ := os.UserHomeDir()
+		path = home
+	}
+
 	err := os.Chdir(path)
 
 	if err != nil {
 		fmt.Printf("cd: %s: No such file or directory\n", path)
-		return
 	}
 
 }

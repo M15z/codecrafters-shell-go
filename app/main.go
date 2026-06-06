@@ -71,8 +71,38 @@ func handleCd(path string) {
 
 }
 
+func splitCommand(command string) []string {
+	var args []string
+	var current strings.Builder
+	inQoute := false
+
+	for _, c := range command {
+		switch {
+		case c == '\'' && inQoute:
+			inQoute = false
+		case c == '\'' && !inQoute:
+			inQoute = true
+		case c == ' ' && !inQoute:
+			if current.Len() > 0 {
+				args = append(args, current.String())
+				current.Reset()
+			}
+		default:
+			current.WriteRune(c)
+
+		}
+	}
+
+	if current.Len() > 0 {
+		args = append(args, current.String())
+	}
+
+	return args
+}
+
 func dispatch(command string) {
-	words := strings.Fields(command)
+	words := splitCommand(command)
+
 	if len(words) == 0 {
 		return
 	}
@@ -104,4 +134,3 @@ func main() {
 		dispatch(command)
 	}
 }
-

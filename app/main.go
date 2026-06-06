@@ -38,7 +38,7 @@ func handleType(words []string) {
 		}
 	}
 
-	fmt.Print("%s: not found\n", args)
+	fmt.Printf("%s: not found\n", args)
 }
 
 func main() {

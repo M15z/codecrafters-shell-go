@@ -27,6 +27,20 @@ func handleEcho(words []string) {
 	fmt.Println()
 }
 
+func handleType(words []string) {
+	builtin := []string{"echo", "exit", "type"}
+	args := words[1]
+
+	for _, b := range builtin {
+		if args == b {
+			fmt.Printf("%s is a shell builtin\n", args)
+			return
+		}
+	}
+
+	fmt.Print("%s: not found\n", args)
+}
+
 func main() {
 	for {
 		command := readPrompt()
@@ -38,6 +52,8 @@ func main() {
 		words := strings.Fields(command)
 		if words[0] == "echo" {
 			handleEcho(words)
+		} else if words[0] == "type" {
+			handleType(words)
 		} else {
 			fmt.Printf("%s: command not found\n", command)
 		}

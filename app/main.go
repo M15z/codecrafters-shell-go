@@ -76,9 +76,17 @@ func splitCommand(command string) []string {
 	var current strings.Builder
 	inSingleQuote := false
 	inDoubleQuote := false
+	runes := []rune(command)
 
-	for _, c := range command {
+	for i := 0; i < len(runes); i++ {
+		c := runes[i]
 		switch {
+
+		// handle back slash \
+		case c == '\\' && !inSingleQuote && !inDoubleQuote:
+			i++
+			current.WriteRune(runes[i])
+
 		// single quote handling
 		case c == '\'' && !inDoubleQuote && inSingleQuote:
 			inSingleQuote = false
@@ -145,3 +153,4 @@ func main() {
 		dispatch(command)
 	}
 }
+

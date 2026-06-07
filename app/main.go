@@ -74,19 +74,30 @@ func handleCd(path string) {
 func splitCommand(command string) []string {
 	var args []string
 	var current strings.Builder
-	inQoute := false
+	inSingleQuote := false
+	inDoubleQuote := false
 
 	for _, c := range command {
 		switch {
-		case c == '\'' && inQoute:
-			inQoute = false
-		case c == '\'' && !inQoute:
-			inQoute = true
-		case c == ' ' && !inQoute:
+		// single quote handling
+		case c == '\'' && !inDoubleQuote && inSingleQuote:
+			inSingleQuote = false
+		case c == '\'' && !inDoubleQuote && !inSingleQuote:
+			inSingleQuote = true
+
+		// double quote handling
+		case c == '"' && !inSingleQuote && inDoubleQuote:
+			inDoubleQuote = false
+		case c == '"' && !inSingleQuote && !inDoubleQuote:
+			inDoubleQuote = true
+
+		// space — split only when outside both quotes
+		case c == ' ' && !inSingleQuote && !inDoubleQuote:
 			if current.Len() > 0 {
 				args = append(args, current.String())
 				current.Reset()
 			}
+
 		default:
 			current.WriteRune(c)
 

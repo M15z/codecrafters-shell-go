@@ -82,8 +82,12 @@ func splitCommand(command string) []string {
 		c := runes[i]
 		switch {
 
-		// handle back slash \
+		// handle back slash \ out side quote
 		case c == '\\' && !inSingleQuote && !inDoubleQuote:
+			i++
+			current.WriteRune(runes[i])
+		// handle back slash in inside DoubleQuote
+		case c == '\\' && !inSingleQuote && inDoubleQuote:
 			i++
 			current.WriteRune(runes[i])
 
@@ -153,4 +157,3 @@ func main() {
 		dispatch(command)
 	}
 }
-

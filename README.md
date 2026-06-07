@@ -1,34 +1,45 @@
-[![progress-banner](https://backend.codecrafters.io/progress/shell/9c127264-4b39-4171-96e9-93821443eb23)](https://app.codecrafters.io/users/M15z?r=2qF)
+# gosh — A Unix Shell in Go
 
-This is a starting point for Go solutions to the
-["Build Your Own Shell" Challenge](https://app.codecrafters.io/courses/shell/overview).
+A minimal Unix shell built from scratch in Go. Supports built-in commands, external program execution, and shell-style quoting.
 
-In this challenge, you'll build your own POSIX compliant shell that's capable of
-interpreting shell commands, running external programs and builtin commands like
-cd, pwd, echo and more. Along the way, you'll learn about shell command parsing,
-REPLs, builtin commands, and more.
+## Features
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+- Built-in commands: `echo`, `pwd`, `cd`, `type`, `exit`
+- External command execution via `$PATH` lookup
+- Quote handling: single quotes, double quotes, and backslash escaping
+- Home directory shortcut with `cd ~`
 
-# Passing the first stage
+## Build & Run
 
-The entry point for your `shell` implementation is in `app/main.go`. Study and
-uncomment the relevant code, then run the command below to execute the tests on
-our servers:
-
-```sh
-codecrafters submit
+```bash
+go build -o gosh ./app
+./gosh
 ```
 
-Time to move on to the next stage!
+## Usage
 
-# Stage 2 & beyond
+```
+$ echo hello world
+hello world
 
-Note: This section is for stages 2 and beyond.
+$ echo 'spaces   preserved'
+spaces   preserved
 
-1. Ensure you have `go (1.26)` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `app/main.go`.
-1. Run `codecrafters submit` to submit your solution to CodeCrafters. Test
-   output will be streamed to your terminal.
+$ pwd
+/home/mohammed
+
+$ cd ~/projects
+$ type echo
+echo is a shell builtin
+
+$ type ls
+ls is /usr/bin/ls
+
+$ ls -la
+
+$ exit
+```
+
+## What I Learned
+
+Built as a Go learning project covering: string manipulation, runes and UTF-8 encoding, OS syscalls (`chdir`, `getwd`), process spawning with `os/exec`, file descriptors, and shell parsing (quoting, escaping).
